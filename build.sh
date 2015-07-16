@@ -22,7 +22,8 @@ cleanUp() {
   (cd ECommerce-Java && rm -f jdk-linux-x64.rpm)
   (cd ECommerce-Tomcat && rm -f AppServerAgent.zip ECommerce-Java)
   (cd ECommerce-Load && rm -rf ECommerce-Load)
- 
+  (cd ECommerce-Angular && rm -rf ECommerce-Angular)
+
   # Remove dangling images left-over from build
   if [[ `docker images -q --filter "dangling=true"` ]]
   then
@@ -42,7 +43,7 @@ downloadAgents() {
   echo "Downloading latest agents from download.appdynamics.com"
   echo "Please supply your AppDynamics Portal login/password"
 
-  read -e -p "Email ID/UserName: " USER_NAME
+  read -e -p "Email/UserName: " USER_NAME
 
   stty -echo
   read -e -p "Password: " PASSWORD
@@ -127,7 +128,7 @@ else
 fi
 
 echo "Building ECommerce-Java..."
-(cd ECommerce-Java; docker build -t appdynamics/ecommerce-java .)
+(cd ECommerce-Java; docker build -t appdynamics/ecommerce-npm-java .)
 echo
 
 cp ${APP_SERVER_AGENT} ECommerce-Tomcat/AppServerAgent.zip
@@ -141,4 +142,9 @@ echo; echo "Building ECommerce-Tomcat..."
 # Build LoadGen container
 echo; echo "Building ECommerce-Load..."
 (cd ECommerce-Load && git clone https://github.com/Appdynamics/ECommerce-Load.git)
-(cd ECommerce-Load && docker build -t appdynamics/ecommerce-load .)
+(cd ECommerce-Load && docker build -t appdynamics/ecommerce-npm-load .)
+
+# Build Angular container
+echo; echo "Building ECommerce-Angular..."
+(cd ECommerce-Angular && git clone https://github.com/Appdynamics/ECommerce-Angular.git)
+(cd ECommerce-Angular && docker build -t appdynamics/ecommerce-npm-angular .)
