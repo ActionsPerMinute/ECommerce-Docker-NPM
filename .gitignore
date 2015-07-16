@@ -1,0 +1,11 @@
+# Do not check in personal env variables
+env.sh
+
+# Ignore downloaded App Server Agent
+AppServerAgent.zip
+
+# Ignore backups of run.sh/env.sh
+*.sh.*
+
+# Ignore jdk rpms
+jdk-*.rpm
