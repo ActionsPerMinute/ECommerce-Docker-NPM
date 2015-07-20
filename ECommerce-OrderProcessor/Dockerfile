@@ -8,10 +8,10 @@ ENV GRADLE_HOME /opt/gradle-2.1
 ENV PATH $PATH:$GRADLE_HOME/bin
 
 # Copy ECommerce-Java project from build dir
-ADD ECommerce-Java /ECommerce-Java
+ADD ECommerce-Java-NPM /ECommerce-Java-NPM
 
 # Gradle build
-RUN cd /ECommerce-Java; gradle war uberJar;
+RUN cd /ECommerce-Java-NPM/Ecommerce-OrderProcessor; gradle war;
 
 # Environment vars: Tomcat
 ENV TOMCAT_MAJOR_VERSION 8
