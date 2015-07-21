@@ -1,17 +1,11 @@
 FROM appdynamics/ecommerce-java:oracle-java7
 
 # Install Gradle
-RUN curl -O http://downloads.gradle.org/distributions/gradle-2.1-bin.zip
-RUN unzip gradle-2.1-bin.zip -d /opt/
-RUN rm gradle-2.1-bin.zip
-ENV GRADLE_HOME /opt/gradle-2.1
+RUN curl -O http://downloads.gradle.org/distributions/gradle-2.5-bin.zip
+RUN unzip gradle-2.5-bin.zip -d /opt/
+RUN rm gradle-2.5-bin.zip
+ENV GRADLE_HOME /opt/gradle-2.5
 ENV PATH $PATH:$GRADLE_HOME/bin
-
-# Copy ECommerce-Java project from build dir
-ADD ECommerce-Java /ECommerce-Java
-
-# Gradle build
-RUN cd /ECommerce-Java; gradle war uberJar;
 
 # Environment vars: Tomcat
 ENV TOMCAT_MAJOR_VERSION 8
@@ -30,6 +24,23 @@ RUN curl -O -k https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR_VERS
     && rm apache-tomcat-*.tar.gz* \
     && mv apache-tomcat-${TOMCAT_MINOR_VERSION} tomcat
 RUN cd ${CATALINA_HOME}/bin;chmod +x *.sh
+
+# Copy ECommerce-Java project from build dir
+#ADD ECommerce-Java-NPM /ECommerce-Java-NPM
+
+RUN git clone https://github.com/Appdynamics/ECommerce-Java-NPM.git
+
+# Gradle build
+RUN cd /ECommerce-Java-NPM; gradle war
+RUN mkdir -p /webapps
+RUN cp /ECommerce-Java-NPM/ECommerce-PaymentGateway/build/libs/paymentgateway.war /webapps/
+RUN cp /ECommerce-Java-NPM/ECommerce-OrderProcessor/build/libs/order.war /webapps/
+RUN cp  /ECommerce-Java/ECommerce-Web/build/libs/appdynamicspilot.war /webapps/
+RUN cp /ECommerce-Java/ECommerce-JMS/build/libs/appdynamicspilotjms.war /webapps/
+RUN cp /ECommerce-Java/ECommerce-WS/build/libs/cart.war /webapps/
+
+# Remove ECommerce-Java-NPM source code
+#RUN rm -rf /ECommerce-Java-NPM
 
 # App Server Agent Install
 ADD AppServerAgent.zip /

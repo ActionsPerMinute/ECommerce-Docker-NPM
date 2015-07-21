@@ -22,8 +22,6 @@ cleanUp() {
 
   (cd ECommerce-Java && rm -f jdk-linux-x64.rpm)
   (cd ECommerce-Tomcat && rm -rf AppServerAgent.zip ECommerce-Java-NPM)
-  (cd ECommerce-OrderProcessor && rm -rf AppServerAgent.zip ECommerce-Java-NPM)
-  (cd ECommerce-PaymentGateway && rm -rf AppServerAgent.zip ECommerce-Java-NPM)
   (cd ECommerce-Load && rm -rf ECommerce-Load)
   (cd ECommerce-Angular && rm -rf ECommerce-Angular)
 
@@ -135,18 +133,11 @@ echo "Building ECommerce-Java..."
 echo
 
 cp ${APP_SERVER_AGENT} ECommerce-Tomcat/AppServerAgent.zip
-cp ${APP_SERVER_AGENT} ECommerce-OrderProcessor/AppServerAgent.zip
-cp ${APP_SERVER_AGENT} ECommerce-PaymentGateway/AppServerAgent.zip
 echo "Copied Agents for ECommerce-Tomcat"
-
-git clone https://github.com/Appdynamics/ECommerce-Java-NPM.git
-cp -r ECommerce-Java-NPM ECommerce-Tomcat/ECommerce-Java
-cp -r ECommerce-Java-NPM ECommerce-OrderProcessor/ECommerce-Java-NPM
-cp -r ECommerce-Java-NPM ECommerce-PaymentGateway/ECommerce-Java-NPM
 
 # Build Tomcat containers
 echo; echo "Building ECommerce-Tomcat..." 
-(cd ECommerce-Tomcat && docker build -t appdynamics/ecommerce-npm-tomcat .)
+(cd ECommerce-Tomcat && docker build --no-cache -t appdynamics/ecommerce-npm-tomcat .)
 
 # Build LoadGen container
 echo; echo "Building ECommerce-Load..."
@@ -157,11 +148,3 @@ echo; echo "Building ECommerce-Load..."
 echo; echo "Building ECommerce-Angular..."
 (cd ECommerce-Angular && git clone https://github.com/Appdynamics/ECommerce-Angular.git)
 (cd ECommerce-Angular && docker build -t appdynamics/ecommerce-npm-angular .)
-
-# Build OrderProcessor container
-echo; echo "Building ECommerce-OrderProcessor..." 
-(cd ECommerce-OrderProcessor && docker build -t appdynamics/ecommerce-npm-order-processor .)
-
-# Build PaymentGateway container
-echo; echo "Building ECommerce-PaymentGateway..." 
-(cd ECommerce-PaymentGateway && docker build -t appdynamics/ecommerce-npm-payment-gateway .)

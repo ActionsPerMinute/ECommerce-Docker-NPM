@@ -3,19 +3,27 @@
 source /env.sh
 
 if [ "${create_schema}" == "true" ]; then
-	cd /ECommerce-Java; gradle --info createDB 
+  cd /ECommerce-Java; gradle --info createDB 
 fi
 
 if [ -n "${web}" ]; then
-        cp  /ECommerce-Java/ECommerce-Web/build/libs/appdynamicspilot.war /tomcat/webapps;
+  cp  /webapps/appdynamicspilot.war /tomcat/webapps;
 fi
 
 if [ -n "${jms}" ]; then
- 	cp /ECommerce-Java/ECommerce-JMS/build/libs/appdynamicspilotjms.war /tomcat/webapps;
+  cp /webapps/appdynamicspilotjms.war /tomcat/webapps;
 fi
 
 if [ -n "${ws}" ]; then
-        cp /ECommerce-Java/ECommerce-WS/build/libs/cart.war /tomcat/webapps;
+  cp /webapps/cart.war /tomcat/webapps;
+fi
+
+if [ -n "${payments}" ]; then
+  cp /webapps/paymentgateway.war /tomcat/webapps/
+fi
+
+if [ -n "${orders}" ]; then
+  cp /webapps/order.war /tomcat/webapps/
 fi
 
 # This script should not return or the container will exit
