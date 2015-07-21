@@ -1,5 +1,5 @@
 # Do not check in personal env variables
-env.sh
+/env.sh
 
 # Ignore downloaded App Server Agent
 AppServerAgent.zip
