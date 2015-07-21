@@ -18,10 +18,9 @@
 
 cleanUp() {
   rm -f cookies.txt index.html* AppServerAgent.zip
-  rm -rf ECommerce-Java-NPM
 
   (cd ECommerce-Java && rm -f jdk-linux-x64.rpm)
-  (cd ECommerce-Tomcat && rm -rf AppServerAgent.zip ECommerce-Java-NPM)
+  (cd ECommerce-Tomcat && rm -rf AppServerAgent.zip)
   (cd ECommerce-Load && rm -rf ECommerce-Load)
   (cd ECommerce-Angular && rm -rf ECommerce-Angular)
 
@@ -129,7 +128,7 @@ else
 fi
 
 echo "Building ECommerce-Java..."
-(cd ECommerce-Java; docker build -t appdynamics/ecommerce-npm-java .)
+(cd ECommerce-Java; docker build -t appdynamics/ecommerce-npm-java:oracle-java7 .)
 echo
 
 cp ${APP_SERVER_AGENT} ECommerce-Tomcat/AppServerAgent.zip

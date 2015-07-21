@@ -1,4 +1,4 @@
-FROM appdynamics/ecommerce-java:oracle-java7
+FROM appdynamics/ecommerce-npm-java:oracle-java7
 
 # Install Gradle
 RUN curl -O http://downloads.gradle.org/distributions/gradle-2.5-bin.zip
