@@ -25,9 +25,7 @@ RUN curl -O -k https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR_VERS
     && mv apache-tomcat-${TOMCAT_MINOR_VERSION} tomcat
 RUN cd ${CATALINA_HOME}/bin;chmod +x *.sh
 
-# Copy ECommerce-Java project from build dir
-#ADD ECommerce-Java-NPM /ECommerce-Java-NPM
-
+# Clone ECommerce-Java-NPM source code project
 RUN git clone https://github.com/Appdynamics/ECommerce-Java-NPM.git
 
 # Gradle build
@@ -40,7 +38,7 @@ RUN cp /ECommerce-Java/ECommerce-JMS/build/libs/appdynamicspilotjms.war /webapps
 RUN cp /ECommerce-Java/ECommerce-WS/build/libs/cart.war /webapps/
 
 # Remove ECommerce-Java-NPM source code
-#RUN rm -rf /ECommerce-Java-NPM
+RUN rm -rf /ECommerce-Java-NPM
 
 # App Server Agent Install
 ADD AppServerAgent.zip /
