@@ -1,5 +1,8 @@
 FROM appdynamics/ecommerce-npm-java:oracle-java7
 
+# Install Git
+RUN yum -y install git
+
 # Install Gradle
 RUN curl -O http://downloads.gradle.org/distributions/gradle-2.5-bin.zip
 RUN unzip gradle-2.5-bin.zip -d /opt/
@@ -33,12 +36,11 @@ RUN cd /ECommerce-Java-NPM; gradle war
 RUN mkdir -p /webapps
 RUN cp /ECommerce-Java-NPM/ECommerce-PaymentGateway/build/libs/paymentgateway.war /webapps/
 RUN cp /ECommerce-Java-NPM/ECommerce-OrderProcessor/build/libs/order.war /webapps/
-RUN cp  /ECommerce-Java/ECommerce-Web/build/libs/appdynamicspilot.war /webapps/
-RUN cp /ECommerce-Java/ECommerce-JMS/build/libs/appdynamicspilotjms.war /webapps/
-RUN cp /ECommerce-Java/ECommerce-WS/build/libs/cart.war /webapps/
+RUN cp /ECommerce-Java-NPM/ECommerce-Web/build/libs/appdynamicspilot.war /webapps/
+RUN cp /ECommerce-Java-NPM/ECommerce-WS/build/libs/cart.war /webapps/
 
 # Remove ECommerce-Java-NPM source code
-RUN rm -rf /ECommerce-Java-NPM
+#RUN rm -rf /ECommerce-Java-NPM
 
 # App Server Agent Install
 ADD AppServerAgent.zip /
@@ -56,8 +58,8 @@ RUN chmod +x /start-appserver-agent.sh
 WORKDIR /
 
 # Note: This command should not return or the container will exit
-CMD "/startup.sh" 
+CMD "/startup.sh"
 
-EXPOSE 80	
+EXPOSE 80
 EXPOSE 8080
 EXPOSE 8009

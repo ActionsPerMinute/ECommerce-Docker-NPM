@@ -23,8 +23,8 @@ RUN curl -O -k https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR_VERS
 RUN cd ${CATALINA_HOME}/bin;chmod +x *.sh
 
 # Build ECommerce-Angular
-ADD ECommerce-Angular /ECommerce-Angular
-RUN (cd ECommerce-Angular; mvn clean install; cp target/AngularUI-1.0-SNAPSHOT.war ${CATALINA_HOME}/webapps/angular.war)
+ADD ECommerce-Angular-NPM /ECommerce-Angular-NPM
+RUN (cd /ECommerce-Angular-NPM; mvn clean install; cp target/AngularUI-1.0-SNAPSHOT.war ${CATALINA_HOME}/webapps/angular.war)
 
 ADD startup.sh /startup.sh
 RUN chmod +x /startup.sh

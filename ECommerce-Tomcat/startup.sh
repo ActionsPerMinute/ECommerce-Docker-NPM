@@ -3,15 +3,11 @@
 source /env.sh
 
 if [ "${create_schema}" == "true" ]; then
-  cd /ECommerce-Java; gradle --info createDB 
+  cd /ECommerce-Java-NPM; gradle --info createDB 
 fi
 
 if [ -n "${web}" ]; then
   cp  /webapps/appdynamicspilot.war /tomcat/webapps;
-fi
-
-if [ -n "${jms}" ]; then
-  cp /webapps/appdynamicspilotjms.war /tomcat/webapps;
 fi
 
 if [ -n "${ws}" ]; then

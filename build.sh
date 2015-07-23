@@ -118,6 +118,7 @@ fi
 # Download Oracle JDK7 and build ecommerce-java base image
 echo; echo "Building ECommerce-Java base image..."
 
+
 if [ -z ${ORACLE_JDK7} ]
 then
     echo "Downloading Oracle Java 7 JDK"
@@ -138,12 +139,15 @@ echo "Copied Agents for ECommerce-Tomcat"
 echo; echo "Building ECommerce-Tomcat..." 
 (cd ECommerce-Tomcat && docker build --no-cache -t appdynamics/ecommerce-npm-tomcat .)
 
+# Build Web Agent container
+#echo; echo "Building ECommerce-LBR..."
+#(cd ECommerce-LBR && docker build -t appdynamics/ecommerce-lbr .)
+
 # Build LoadGen container
 echo; echo "Building ECommerce-Load..."
-(cd ECommerce-Load && git clone https://github.com/Appdynamics/ECommerce-Load.git)
 (cd ECommerce-Load && docker build -t appdynamics/ecommerce-npm-load .)
 
 # Build Angular container
 echo; echo "Building ECommerce-Angular..."
-(cd ECommerce-Angular && git clone https://github.com/Appdynamics/ECommerce-Angular.git)
+(cd ECommerce-Angular && git clone https://github.com/Appdynamics/ECommerce-Angular-NPM.git)
 (cd ECommerce-Angular && docker build -t appdynamics/ecommerce-npm-angular .)

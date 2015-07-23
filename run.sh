@@ -37,7 +37,7 @@ source env.sh
 echo -n "db: "; docker run --name db -e MYSQL_ROOT_PASSWORD=singcontroller -p 3306:3306 -d mysql
 sleep 30
 
-echo -n "orders: "; docker run --name orders -h ${APP_NAME}-orders -e orders=true \
+echo -n "orders: "; docker run --name orders -h ${APP_NAME}-orders -e create_schema=true -e orders=true \
 	-e ACCOUNT_NAME=${ACCOUNT_NAME} -e ACCESS_KEY=${ACCESS_KEY} -e EVENT_ENDPOINT=${EVENT_ENDPOINT} \
 	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
 	-e NODE_NAME=${APP_NAME}_ORDERS_NODE -e APP_NAME=$APP_NAME -e TIER_NAME=OrderProcessor \
@@ -49,10 +49,10 @@ echo -n "payments: "; docker run --name payments -h ${APP_NAME}-payments -e paym
 	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
 	-e NODE_NAME=${APP_NAME}_WEB2_NODE -e APP_NAME=$APP_NAME -e TIER_NAME=ECommerce-Services \
 	-e SIM_HIERARCHY_1=${SIM_HIERARCHY_1} -e SIM_HIERARCHY_2=${SIM_HIERARCHY_2} \
-	--link db:db -d appdynamics/ecommerce-npm-tomcat:$VERSION
+	-p 8056:8080 --link db:db -d appdynamics/ecommerce-npm-tomcat:$VERSION
 sleep 30
 
-echo -n "ws: "; docker run --name ws -h ${APP_NAME}-ws -e create_schema=true -e ws=true \
+echo -n "ws: "; docker run --name ws -h ${APP_NAME}-ws -e ws=true \
 	-e ACCOUNT_NAME=${ACCOUNT_NAME} -e ACCESS_KEY=${ACCESS_KEY} -e EVENT_ENDPOINT=${EVENT_ENDPOINT} \
 	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
 	-e NODE_NAME=${APP_NAME}_WS_NODE -e APP_NAME=$APP_NAME -e TIER_NAME=Inventory-Services \
@@ -64,26 +64,11 @@ echo -n "web: "; docker run --name web -h ${APP_NAME}-web -e JVM_ROUTE=route1 -e
 	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
 	-e NODE_NAME=${APP_NAME}_WEB1_NODE -e APP_NAME=$APP_NAME -e TIER_NAME=ECommerce-Services \
 	-e SIM_HIERARCHY_1=${SIM_HIERARCHY_1} -e SIM_HIERARCHY_2=${SIM_HIERARCHY_2} \
-	--link db:db --link ws:ws --link orders:orders --link payments:payments -d appdynamics/ecommerce-npm-tomcat:$VERSION
+	-p 8055:8080 --link db:db --link ws:ws --link orders:orders --link payments:payments -d appdynamics/ecommerce-npm-tomcat:$VERSION
 sleep 30
 
-echo -n "web1: "; docker run --name web1 -h ${APP_NAME}-web1 -e JVM_ROUTE=route2 -e web=true \
-	-e ACCOUNT_NAME=${ACCOUNT_NAME} -e ACCESS_KEY=${ACCESS_KEY} -e EVENT_ENDPOINT=${EVENT_ENDPOINT} \
-	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
-	-e NODE_NAME=${APP_NAME}_WEB2_NODE -e APP_NAME=$APP_NAME -e TIER_NAME=ECommerce-Services \
-	-e SIM_HIERARCHY_1=${SIM_HIERARCHY_1} -e SIM_HIERARCHY_2=${SIM_HIERARCHY_2} \
-	--link db:db --link ws:ws --link orders:orders --link payments:payments -d appdynamics/ecommerce-npm-tomcat:$VERSION
-sleep 30
-
-
-echo -n "lbr: "; docker run --name=lbr -h ${APP_NAME}-lbr \
-	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
-	-e APP_NAME=${APP_NAME} -e TIER_NAME=Web-Tier-Services -e NODE_NAME=${APP_NAME}-Apache \
-	-e ACCOUNT_NAME=${ACCOUNT_NAME} -e ACCESS_KEY=${ACCESS_KEY} -e EVENT_ENDPOINT=${EVENT_ENDPOINT} \
-	-e SIM_HIERARCHY_1=${SIM_HIERARCHY_1} -e SIM_HIERARCHY_2=${SIM_HIERARCHY_2} \
-	--link web:web --link web1:web1 -p 80:80 -d appdynamics/ecommerce-lbr:$VERSION
-sleep 30
-
-echo -n "load-gen: "; docker run --name=load-gen --link lbr:lbr -d appdynamics/ecommerce-npm-load
 echo -n "angular: "; docker run --name angular -h ${APP_NAME}-angular \
-	--link lbr:lbr -p 8080:8080 -d appdynamics/ecommerce-npm-angular:$VERSION
+	--link web:web -p 8080:8080 -d appdynamics/ecommerce-npm-angular:$VERSION
+sleep 30
+
+echo -n "load-gen: "; docker run --name load-gen --link web:web --link angular:angular -d appdynamics/ecommerce-npm-load
