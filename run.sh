@@ -37,13 +37,6 @@ source env.sh
 echo -n "db: "; docker run --name db -e MYSQL_ROOT_PASSWORD=singcontroller -p 3306:3306 -d mysql
 sleep 30
 
-echo -n "orders: "; docker run --name orders -h ${APP_NAME}-orders -e create_schema=true -e orders=true \
-	-e ACCOUNT_NAME=${ACCOUNT_NAME} -e ACCESS_KEY=${ACCESS_KEY} -e EVENT_ENDPOINT=${EVENT_ENDPOINT} \
-	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
-	-e NODE_NAME=${APP_NAME}_ORDERS_NODE -e APP_NAME=$APP_NAME -e TIER_NAME=OrderProcessor \
-	-e SIM_HIERARCHY_1=${SIM_HIERARCHY_1} -e SIM_HIERARCHY_2=${SIM_HIERARCHY_2} \
-	-p 8080:8080 --link db:db -d appdynamics/ecommerce-npm-tomcat:$VERSION
-
 echo -n "payments: "; docker run --name payments -h ${APP_NAME}-payments -e payments=true \
 	-e ACCOUNT_NAME=${ACCOUNT_NAME} -e ACCESS_KEY=${ACCESS_KEY} -e EVENT_ENDPOINT=${EVENT_ENDPOINT} \
 	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
@@ -52,12 +45,19 @@ echo -n "payments: "; docker run --name payments -h ${APP_NAME}-payments -e paym
 	-p 8081:8080 --link db:db -d appdynamics/ecommerce-npm-tomcat:$VERSION
 sleep 30
 
+echo -n "orders: "; docker run --name orders -h ${APP_NAME}-orders -e create_schema=true -e orders=true \
+	-e ACCOUNT_NAME=${ACCOUNT_NAME} -e ACCESS_KEY=${ACCESS_KEY} -e EVENT_ENDPOINT=${EVENT_ENDPOINT} \
+	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
+	-e NODE_NAME=${APP_NAME}_ORDERS_NODE -e APP_NAME=$APP_NAME -e TIER_NAME=OrderProcessor \
+	-e SIM_HIERARCHY_1=${SIM_HIERARCHY_1} -e SIM_HIERARCHY_2=${SIM_HIERARCHY_2} \
+	-p 8080:8080 --link db:db --link payments:payments -d appdynamics/ecommerce-npm-tomcat:$VERSION
+
 echo -n "ws: "; docker run --name ws -h ${APP_NAME}-ws -e ws=true \
 	-e ACCOUNT_NAME=${ACCOUNT_NAME} -e ACCESS_KEY=${ACCESS_KEY} -e EVENT_ENDPOINT=${EVENT_ENDPOINT} \
 	-e CONTROLLER=${CONTR_HOST} -e APPD_PORT=${CONTR_PORT} \
 	-e NODE_NAME=${APP_NAME}_WS_NODE -e APP_NAME=$APP_NAME -e TIER_NAME=Inventory-Services \
 	-e SIM_HIERARCHY_1=${SIM_HIERARCHY_1} -e SIM_HIERARCHY_2=${SIM_HIERARCHY_2} \
-	-p 8082:8080 --link db:db --link payments:payments -d appdynamics/ecommerce-npm-tomcat:$VERSION
+	-p 8082:8080 --link db:db  -d appdynamics/ecommerce-npm-tomcat:$VERSION
 
 echo -n "web: "; docker run --name web -h ${APP_NAME}-web -e JVM_ROUTE=route1 -e web=true \
 	-e ACCOUNT_NAME=${ACCOUNT_NAME} -e ACCESS_KEY=${ACCESS_KEY} -e EVENT_ENDPOINT=${EVENT_ENDPOINT} \
