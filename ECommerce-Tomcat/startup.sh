@@ -3,7 +3,7 @@
 source /env.sh
 
 if [ "${create_schema}" == "true" ]; then
-  cd /ECommerce-Java-NPM; gradle --info createDB 
+  cd /ECommerce-Java-NPM; gradle --info createDB
 fi
 
 if [ -n "${web}" ]; then
@@ -27,4 +27,3 @@ fi
 
 # Start App Server Agent
 /start-appserver-agent.sh
-

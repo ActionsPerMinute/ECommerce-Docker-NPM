@@ -13,7 +13,7 @@
 #    (http://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html)
 # 2. Download and run the official Docker mysql container
 #    (https://registry.hub.docker.com/_/mysql/)
- 
+
 #! /bin/bash
 
 cleanUp() {
@@ -71,8 +71,8 @@ downloadAgents() {
 # Usage information
 if [[ $1 == *--help* ]]
 then
-  echo "Specify agent locations: build.sh 
-          -a <Path to App Server Agent> 
+  echo "Specify agent locations: build.sh
+          -a <Path to App Server Agent>
           -j <Path to Oracle JDK7>"
   echo "Prompt for agent locations: build.sh"
   echo "Download latest App Server Agent: build.sh --download"
@@ -81,7 +81,7 @@ fi
 
 # Prompt for location of App Server, Machine and Database Agents
 if  [ $# -eq 0 ]
-then   
+then
   promptForAgents
 
 elif [ $1 == "--download" ]
@@ -103,7 +103,7 @@ else
         if [ ! -e ${ORACLE_JDK7} ]; then
           echo "Not found: ${ORACLE_JDK7}"; exit
         fi
-        ;; 
+        ;;
       \?)
         echo "Invalid option: -$OPTARG"
         ;;
@@ -136,7 +136,7 @@ cp ${APP_SERVER_AGENT} ECommerce-Tomcat/AppServerAgent.zip
 echo "Copied Agents for ECommerce-Tomcat"
 
 # Build Tomcat containers
-echo; echo "Building ECommerce-Tomcat..." 
+echo; echo "Building ECommerce-Tomcat..."
 (cd ECommerce-Tomcat && docker build --no-cache -t appdynamics/ecommerce-npm-tomcat .)
 
 # Build Web Agent container
@@ -150,4 +150,4 @@ echo; echo "Building ECommerce-Load..."
 # Build Angular container
 echo; echo "Building ECommerce-Angular..."
 (cd ECommerce-Angular && git clone https://github.com/Appdynamics/ECommerce-Angular-NPM.git)
-(cd ECommerce-Angular && docker build -t appdynamics/ecommerce-npm-angular .)
+(cd ECommerce-Angular && docker build --no-cache -t appdynamics/ecommerce-npm-angular .)
