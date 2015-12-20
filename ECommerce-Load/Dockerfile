@@ -1,5 +1,6 @@
-FROM appdynamics/ecommerce-java:oracle-java7
+FROM appdynamics/ecommerce-npm-java:oracle-java7
 
+RUN yum -y install wget
 RUN yum -y install firefox
 RUN yum -y install git
 RUN yum -y install Xvfb
