@@ -48,7 +48,7 @@ RUN unzip -q /AppServerAgent.zip -d ${CATALINA_HOME}/appagent;rm AppServerAgent.
 
 # Startup scripts
 ADD startup.sh /
-RUN version=`find ${CATALINA_HOME}/appagent -type d -name "ver*" | sed "s:^${CATALINA_HOME}/appagent/::"`; \
+RUN version=`find ${CATALINA_HOME}/appagent -type d -name "ver*" | head -n 1 | sed "s:^${CATALINA_HOME}/appagent/::"`; \
     sed -e "s:_VERSION_STRING:$version:g" env.sh > env.sh.tmp && mv env.sh.tmp env.sh
 ADD start-appserver-agent.sh /
 
